@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import CustomCursor from './components/CustomCursor'
 import FloatingParticles from './components/FloatingParticles'
+import AmbientTechElements from './components/AmbientTechText'
 import Hero from './sections/Hero'
 import About from './sections/About'
 import Projects from './sections/Projects'
@@ -42,6 +43,7 @@ function App() {
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
       <div className="noise" />
       <FloatingParticles count={20} />
+      <AmbientTechElements />
       <CustomCursor />
       <Navigation />
       <Hero />

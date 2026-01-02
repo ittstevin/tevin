@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform } from 'framer-motion'
 import { useEffect, useState, useRef } from 'react'
 import MagneticButton from '../components/MagneticButton'
 import ShuffleText from '../components/ShuffleText'
+import HologramText from '../components/HologramText'
 
 const Hero = () => {
   const [mounted, setMounted] = useState(false)
@@ -196,13 +197,15 @@ const Hero = () => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ delay: 0.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           >
-            <ShuffleText
-              speed={50}
-              characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*"
-              direction="left-to-right"
-            >
-              TNESH
-            </ShuffleText>
+            <HologramText scrollProgress={scrollYProgress}>
+              <ShuffleText
+                speed={50}
+                characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*"
+                direction="left-to-right"
+              >
+                TNESH
+              </ShuffleText>
+            </HologramText>
           </motion.span>
           
           {/* Decorative underline */}
