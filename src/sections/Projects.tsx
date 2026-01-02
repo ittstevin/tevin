@@ -2,6 +2,7 @@ import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'fram
 import { useRef, useState } from 'react'
 import MagneticButton from '../components/MagneticButton'
 import ShuffleText from '../components/ShuffleText'
+import HorizontalScrollSection from '../components/HorizontalScrollSection'
 
 interface Project {
   title: string
@@ -41,18 +42,17 @@ const Projects = () => {
   })
 
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
-  const y = useTransform(scrollYProgress, [0, 1], [200, -200])
 
   return (
     <section 
       id="projects" 
       ref={ref} 
-      className="relative min-h-screen py-40 px-8 overflow-hidden"
+      className="relative overflow-hidden"
     >
       {/* Background elements */}
       <motion.div
-        className="absolute inset-0 opacity-[0.02]"
-        style={{ y: useTransform(scrollYProgress, [0, 1], [0, 30]) }}
+        className="absolute inset-0 opacity-[0.02] pointer-events-none"
+        style={{ y: useTransform(scrollYProgress, [0, 1], [0, 40]) }}
       >
         <div
           className="w-full h-full"
@@ -66,55 +66,75 @@ const Projects = () => {
         />
       </motion.div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <motion.div
-          className="mb-32"
-          style={{ opacity }}
-          initial={{ opacity: 0, y: 80 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <motion.span
-            className="text-xs md:text-sm font-medium tracking-[0.4em] uppercase opacity-50 block mb-6"
-            initial={{ opacity: 0, letterSpacing: '0.2em' }}
-            whileInView={{ opacity: 0.5, letterSpacing: '0.4em' }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-          >
-            Portfolio
-          </motion.span>
-          <motion.h2
-            className="text-7xl md:text-9xl font-black mt-4 tracking-tight leading-none"
-            initial={{ opacity: 0, x: -80 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <ShuffleText
-              speed={50}
-              characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*"
-              direction="left-to-right"
-            >
-              Projects
-            </ShuffleText>
-          </motion.h2>
+      <div className="relative z-10">
+        {/* Header - Fixed position above horizontal scroll */}
+        <div className="px-8 pt-40 pb-20">
           <motion.div
-            className="mt-8 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.6, duration: 1 }}
-          />
-        </motion.div>
+            className="max-w-7xl mx-auto"
+            style={{ opacity }}
+            initial={{ opacity: 0, y: 80 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <motion.span
+              className="text-xs md:text-sm font-medium tracking-[0.4em] uppercase opacity-50 block mb-6"
+              initial={{ opacity: 0, letterSpacing: '0.2em' }}
+              whileInView={{ opacity: 0.5, letterSpacing: '0.4em' }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              Portfolio
+            </motion.span>
+            <motion.h2
+              className="text-7xl md:text-9xl font-black mt-4 tracking-tight leading-none"
+              initial={{ opacity: 0, x: -80 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <ShuffleText
+                speed={50}
+                characters="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*"
+                direction="left-to-right"
+              >
+                Projects
+              </ShuffleText>
+            </motion.h2>
+            <motion.div
+              className="mt-8 h-px bg-gradient-to-r from-transparent via-white/30 to-transparent"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.6, duration: 1 }}
+            />
+          </motion.div>
+        </div>
 
-        <div className="grid md:grid-cols-2 gap-10">
+        {/* Horizontal Scroll Container - Forces horizontal scroll */}
+        <div className="md:block hidden -mx-8">
+          <HorizontalScrollSection>
+            <div className="flex gap-10" style={{ paddingLeft: '2rem', paddingRight: '2rem' }}>
+              {projects.map((project, index) => (
+                <ProjectCard 
+                  key={index} 
+                  project={project} 
+                  index={index}
+                  isHorizontal={true}
+                />
+              ))}
+            </div>
+          </HorizontalScrollSection>
+        </div>
+
+        {/* Vertical Grid for Mobile */}
+        <div className="grid md:hidden gap-8 px-8 pb-40">
           {projects.map((project, index) => (
             <ProjectCard 
               key={index} 
               project={project} 
-              index={index} 
-              parallaxY={index % 2 === 0 ? y : undefined}
+              index={index}
+              isHorizontal={false}
             />
           ))}
         </div>
@@ -126,10 +146,10 @@ const Projects = () => {
 interface ProjectCardProps {
   project: Project
   index: number
-  parallaxY?: any
+  isHorizontal: boolean
 }
 
-const ProjectCard = ({ project, index, parallaxY }: ProjectCardProps) => {
+const ProjectCard = ({ project, index, isHorizontal }: ProjectCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
   
@@ -160,7 +180,9 @@ const ProjectCard = ({ project, index, parallaxY }: ProjectCardProps) => {
   return (
     <motion.div
       ref={cardRef}
-      className="group relative overflow-hidden border border-white/10 bg-black/30 backdrop-blur-md"
+      className={`group relative overflow-hidden border border-white/10 bg-black/30 backdrop-blur-md ${
+        isHorizontal ? 'w-[90vw] max-w-[800px] flex-shrink-0' : 'w-full'
+      }`}
       initial={{ opacity: 0, y: 120, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true, margin: "-100px" }}
@@ -170,9 +192,8 @@ const ProjectCard = ({ project, index, parallaxY }: ProjectCardProps) => {
       onMouseEnter={() => setIsHovered(true)}
       whileHover={{ scale: 1.02, zIndex: 10 }}
       style={{ 
-        y: parallaxY,
-        rotateX,
-        rotateY,
+        rotateX: isHorizontal ? rotateX : 0,
+        rotateY: isHorizontal ? rotateY : 0,
         transformStyle: 'preserve-3d',
       }}
       data-hover

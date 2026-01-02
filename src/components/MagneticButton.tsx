@@ -42,7 +42,7 @@ const MagneticButton = ({ children, className = '', href, onClick, variant = 'pr
     setIsHovered(true)
   }
 
-  const baseClasses = 'relative inline-block px-10 py-5 border border-white/30 bg-transparent text-white font-medium transition-all duration-500 overflow-hidden group backdrop-blur-sm'
+  const baseClasses = 'relative inline-block px-8 py-4 sm:px-10 sm:py-5 border border-white/30 bg-transparent text-white font-medium transition-all duration-500 overflow-hidden group backdrop-blur-sm text-sm sm:text-base'
   const variantClasses = variant === 'primary' 
     ? 'hover:border-white hover:bg-white/5 glow' 
     : 'hover:border-white/50'

@@ -15,8 +15,13 @@ function App() {
     // Smooth scroll behavior
     document.documentElement.style.scrollBehavior = 'smooth'
     
-    // Prevent default cursor
-    document.body.style.cursor = 'none'
+    // Check if device is mobile/touch
+    const isMobile = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+    
+    // Prevent default cursor only on desktop
+    if (!isMobile) {
+      document.body.style.cursor = 'none'
+    }
     
     // Enhanced smooth scroll for anchor links
     const handleAnchorClick = (e: MouseEvent) => {
@@ -34,7 +39,9 @@ function App() {
     document.addEventListener('click', handleAnchorClick)
     
     return () => {
-      document.body.style.cursor = 'auto'
+      if (!isMobile) {
+        document.body.style.cursor = 'auto'
+      }
       document.removeEventListener('click', handleAnchorClick)
     }
   }, [])

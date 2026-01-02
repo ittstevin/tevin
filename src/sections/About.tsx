@@ -105,7 +105,7 @@ const About = () => {
             />
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-20 items-start">
+          <div className="grid md:grid-cols-2 gap-12 md:gap-20 items-start">
             {/* Left column - text */}
             <motion.div
               initial={{ opacity: 0, x: -100 }}

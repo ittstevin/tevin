@@ -191,7 +191,7 @@ const Hero = () => {
             }}
           />
           
-          <motion.span
+          <motion.div
             className="block relative z-10"
             initial={{ opacity: 0, scale: 0.9, y: 30 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -206,7 +206,7 @@ const Hero = () => {
                 TNESH
               </ShuffleText>
             </HologramText>
-          </motion.span>
+          </motion.div>
           
           {/* Decorative underline */}
           <motion.div
@@ -241,14 +241,15 @@ const Hero = () => {
         {/* Buttons with staggered entrance */}
         <motion.div
           variants={itemVariants}
-          className="flex flex-col sm:flex-row gap-8 justify-center items-center"
+          className="flex flex-col sm:flex-row gap-6 sm:gap-8 justify-center items-center px-4"
         >
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.8, duration: 0.8 }}
+            className="w-full sm:w-auto"
           >
-            <MagneticButton href="#projects" variant="primary">
+            <MagneticButton href="#projects" variant="primary" className="w-full sm:w-auto text-center">
               View Work
             </MagneticButton>
           </motion.div>
@@ -256,8 +257,9 @@ const Hero = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 2, duration: 0.8 }}
+            className="w-full sm:w-auto"
           >
-            <MagneticButton href="#contact" variant="secondary">
+            <MagneticButton href="#contact" variant="secondary" className="w-full sm:w-auto text-center">
               Get In Touch
             </MagneticButton>
           </motion.div>

@@ -7,8 +7,19 @@ const CustomCursor = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [cursorType, setCursorType] = useState<CursorType>('default')
   const [isClicking, setIsClicking] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
+    // Check if device is mobile/touch
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia('(hover: none) and (pointer: coarse)').matches)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    // Don't show custom cursor on mobile
+    if (isMobile) return
+
     const updateMousePosition = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY })
     }
@@ -46,8 +57,12 @@ const CustomCursor = () => {
       window.removeEventListener('mousedown', handleMouseDown)
       window.removeEventListener('mouseup', handleMouseUp)
       window.removeEventListener('mouseover', handleMouseOver)
+      window.removeEventListener('resize', checkMobile)
     }
-  }, [])
+  }, [isMobile])
+
+  // Don't render cursor on mobile
+  if (isMobile) return null
 
   const getCursorScale = () => {
     if (isClicking) return 0.7

@@ -101,7 +101,7 @@ const Contact = () => {
 
         {/* Enhanced buttons */}
         <motion.div
-          className="flex flex-col sm:flex-row gap-8 justify-center items-center mb-24"
+          className="flex flex-col sm:flex-row gap-6 sm:gap-8 justify-center items-center mb-16 sm:mb-24 px-4"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -112,8 +112,9 @@ const Contact = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.9 }}
+            className="w-full sm:w-auto"
           >
-            <MagneticButton href="mailto:hello@tnesh.dev" variant="primary">
+            <MagneticButton href="mailto:hello@tnesh.dev" variant="primary" className="w-full sm:w-auto text-center">
               Send Email
             </MagneticButton>
           </motion.div>
@@ -122,8 +123,9 @@ const Contact = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 1 }}
+            className="w-full sm:w-auto"
           >
-            <MagneticButton href="#projects" variant="secondary">
+            <MagneticButton href="#projects" variant="secondary" className="w-full sm:w-auto text-center">
               View Work
             </MagneticButton>
           </motion.div>

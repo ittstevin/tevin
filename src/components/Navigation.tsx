@@ -74,7 +74,7 @@ const Navigation = () => {
           />
         </motion.a>
 
-        <div className="hidden md:flex items-center gap-10">
+        <div className="hidden md:flex items-center gap-8 lg:gap-10">
           {navItems.map((item, index) => (
             <motion.a
               key={item.name}
