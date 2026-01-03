@@ -12,7 +12,6 @@ const About = () => {
   const y = useTransform(scrollYProgress, [0, 1], [150, -150])
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
   const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.95, 1, 0.98])
-  const blur = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0, 5, 10])
 
   return (
     <section 
@@ -59,7 +58,7 @@ const About = () => {
 
       <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
-          style={{ opacity, scale, filter: `blur(${blur}px)` }}
+          style={{ opacity, scale }}
           className="relative"
         >
           {/* Section header with enhanced animation */}

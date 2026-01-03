@@ -49,7 +49,7 @@ function App() {
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden">
       <div className="noise" />
-      <FloatingParticles count={20} />
+      <FloatingParticles count={8} />
       <AmbientTechElements />
       <CustomCursor />
       <Navigation />

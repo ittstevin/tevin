@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 interface AmbientTechTextProps {
   text: string
@@ -17,22 +17,13 @@ const AmbientTechText = ({ text, delay = 0, position }: AmbientTechTextProps) =>
     return () => clearTimeout(timer)
   }, [delay])
 
-  // Random animation variants
-  const variants = [
-    {
-      opacity: [0.02, 0.08, 0.02],
-      y: [0, -5, 0],
-    },
-    {
-      opacity: [0.03, 0.06, 0.03],
-      x: [0, 3, 0],
-    },
-    {
-      opacity: [0.02, 0.05, 0.02],
-    },
-  ]
-
-  const randomVariant = variants[Math.floor(Math.random() * variants.length)]
+  const variant = useMemo(() => {
+    const variants = [
+      { opacity: [0.015, 0.05, 0.015] },
+      { opacity: [0.02, 0.04, 0.02] },
+    ]
+    return variants[Math.floor(Math.random() * variants.length)]
+  }, [])
 
   return (
     <motion.div
@@ -46,17 +37,15 @@ const AmbientTechText = ({ text, delay = 0, position }: AmbientTechTextProps) =>
         textShadow: '0 0 1px rgba(255, 255, 255, 0.08)',
         letterSpacing: '0.12em',
         fontWeight: 300,
+        willChange: 'opacity',
       }}
       initial={{ opacity: 0 }}
-      animate={isVisible ? {
-        ...randomVariant,
-        opacity: randomVariant.opacity || [0.015, 0.05, 0.015],
-      } : { opacity: 0 }}
+      animate={isVisible ? variant : { opacity: 0 }}
       transition={{
-        duration: 10 + Math.random() * 6,
+        duration: 12,
         repeat: Infinity,
         ease: "easeInOut",
-        delay: Math.random() * 3,
+        delay: Math.random() * 2,
       }}
     >
       // {text}
@@ -65,24 +54,19 @@ const AmbientTechText = ({ text, delay = 0, position }: AmbientTechTextProps) =>
 }
 
 const AmbientTechElements = () => {
-  const techTexts = [
+  const techTexts = useMemo(() => [
     'INITIALIZING SYSTEM',
     'LOADING INTERFACE',
     'NEW FILES DETECTED',
     'DATABASE SYNCED',
     'SIGNAL STABLE',
     'RENDER PIPELINE READY',
-    'USER ONLINE',
-    'ACCESS GRANTED',
-    'SYSTEM OPTIMAL',
-    'CONNECTION SECURE',
-  ]
+  ], [])
 
-  // Random positions for each text - more scattered
-  const positions = techTexts.map((_, i) => ({
-    top: `${8 + (i * 9.5) % 82}%`,
-    left: `${3 + (i * 13.7) % 88}%`,
-  }))
+  const positions = useMemo(() => techTexts.map((_, i) => ({
+    top: `${10 + (i * 15) % 75}%`,
+    left: `${5 + (i * 18) % 85}%`,
+  })), [techTexts])
 
   return (
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
@@ -90,7 +74,7 @@ const AmbientTechElements = () => {
         <AmbientTechText
           key={text}
           text={text}
-          delay={index * 500}
+          delay={index * 800}
           position={positions[index]}
         />
       ))}
@@ -99,4 +83,3 @@ const AmbientTechElements = () => {
 }
 
 export default AmbientTechElements
-

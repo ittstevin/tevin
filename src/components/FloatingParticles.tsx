@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 interface Particle {
   id: number
@@ -10,23 +10,20 @@ interface Particle {
   delay: number
 }
 
-const FloatingParticles = ({ count = 15 }: { count?: number }) => {
-  const [particles, setParticles] = useState<Particle[]>([])
-
-  useEffect(() => {
-    const newParticles: Particle[] = Array.from({ length: count }, (_, i) => ({
+const FloatingParticles = ({ count = 8 }: { count?: number }) => {
+  const particles = useMemo(() => {
+    return Array.from({ length: count }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 2 + 1,
-      duration: Math.random() * 20 + 15,
-      delay: Math.random() * 5,
+      size: Math.random() * 1.5 + 0.5,
+      duration: Math.random() * 15 + 20,
+      delay: Math.random() * 3,
     }))
-    setParticles(newParticles)
   }, [count])
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden" style={{ willChange: 'contents' }}>
       {particles.map((particle) => (
         <motion.div
           key={particle.id}
@@ -36,12 +33,11 @@ const FloatingParticles = ({ count = 15 }: { count?: number }) => {
             top: `${particle.y}%`,
             width: `${particle.size}px`,
             height: `${particle.size}px`,
+            willChange: 'transform',
           }}
           animate={{
-            y: [0, -30, 0],
-            x: [0, Math.random() * 20 - 10, 0],
-            opacity: [0.1, 0.3, 0.1],
-            scale: [1, 1.2, 1],
+            y: [0, -20, 0],
+            opacity: [0.15, 0.25, 0.15],
           }}
           transition={{
             duration: particle.duration,
@@ -56,4 +52,3 @@ const FloatingParticles = ({ count = 15 }: { count?: number }) => {
 }
 
 export default FloatingParticles
-

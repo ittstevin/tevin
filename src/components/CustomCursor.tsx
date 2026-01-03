@@ -1,13 +1,27 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 
 type CursorType = 'default' | 'hover' | 'text' | 'link' | 'image' | 'button'
 
 const CustomCursor = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
   const [cursorType, setCursorType] = useState<CursorType>('default')
   const [isClicking, setIsClicking] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+
+  // Use motion values for smoother performance
+  const cursorX = useMotionValue(0)
+  const cursorY = useMotionValue(0)
+  
+  // High stiffness springs for very responsive cursor (almost instant but smooth)
+  const springConfig = { stiffness: 2000, damping: 60, mass: 0.05 }
+  const x = useSpring(cursorX, springConfig)
+  const y = useSpring(cursorY, springConfig)
+
+  // Ring position relative to cursor
+  const ringX = useTransform(x, (val) => val - 16)
+  const ringY = useTransform(y, (val) => val - 16)
+  const dotX = useTransform(x, (val) => val - 4)
+  const dotY = useTransform(y, (val) => val - 4)
 
   useEffect(() => {
     // Check if device is mobile/touch
@@ -15,13 +29,13 @@ const CustomCursor = () => {
       setIsMobile(window.matchMedia('(hover: none) and (pointer: coarse)').matches)
     }
     checkMobile()
-    window.addEventListener('resize', checkMobile)
     
     // Don't show custom cursor on mobile
     if (isMobile) return
 
     const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY })
+      cursorX.set(e.clientX)
+      cursorY.set(e.clientY)
     }
 
     const handleMouseDown = () => setIsClicking(true)
@@ -47,7 +61,7 @@ const CustomCursor = () => {
       }
     }
 
-    window.addEventListener('mousemove', updateMousePosition)
+    window.addEventListener('mousemove', updateMousePosition, { passive: true })
     window.addEventListener('mousedown', handleMouseDown)
     window.addEventListener('mouseup', handleMouseUp)
     window.addEventListener('mouseover', handleMouseOver)
@@ -57,9 +71,8 @@ const CustomCursor = () => {
       window.removeEventListener('mousedown', handleMouseDown)
       window.removeEventListener('mouseup', handleMouseUp)
       window.removeEventListener('mouseover', handleMouseOver)
-      window.removeEventListener('resize', checkMobile)
     }
-  }, [isMobile])
+  }, [isMobile, cursorX, cursorY])
 
   // Don't render cursor on mobile
   if (isMobile) return null
@@ -104,82 +117,45 @@ const CustomCursor = () => {
       {/* Main cursor dot with glow */}
       <motion.div
         className="fixed top-0 left-0 w-2 h-2 bg-white rounded-full pointer-events-none z-[10000] mix-blend-difference"
+        style={{
+          x: dotX,
+          y: dotY,
+          scale: getCursorScale(),
+          boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)',
+          willChange: 'transform',
+        }}
         animate={{
-          x: mousePosition.x - 4,
-          y: mousePosition.y - 4,
           scale: getCursorScale(),
         }}
         transition={{
           type: 'spring',
-          stiffness: 500,
-          damping: 28,
-          mass: 0.5,
-        }}
-        style={{
-          boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)',
+          stiffness: 600,
+          damping: 30,
         }}
       />
 
       {/* Enhanced cursor ring */}
       <motion.div
         className="fixed top-0 left-0 w-8 h-8 border border-white rounded-full pointer-events-none z-[9999] mix-blend-difference"
+        style={{
+          x: ringX,
+          y: ringY,
+          scale: getRingScale(),
+          opacity: getRingOpacity(),
+          willChange: 'transform',
+        }}
         animate={{
-          x: mousePosition.x - 16,
-          y: mousePosition.y - 16,
           scale: getRingScale(),
           opacity: getRingOpacity(),
         }}
         transition={{
           type: 'spring',
-          stiffness: 300,
+          stiffness: 500,
           damping: 30,
-          mass: 0.8,
         }}
       />
-
-      {/* Multiple trailing dots for smoother effect */}
-      {[0, 1, 2].map((i) => (
-        <motion.div
-          key={i}
-          className="fixed top-0 left-0 w-1 h-1 bg-white rounded-full pointer-events-none z-[9998] mix-blend-difference"
-          animate={{
-            x: mousePosition.x - 2,
-            y: mousePosition.y - 2,
-          }}
-          transition={{
-            type: 'spring',
-            stiffness: 200 - i * 30,
-            damping: 20 - i * 3,
-            mass: 1 + i * 0.3,
-          }}
-          style={{
-            opacity: 0.6 - i * 0.2,
-          }}
-        />
-      ))}
-
-      {/* Cursor label for special states */}
-      {cursorType !== 'default' && (
-        <motion.div
-          className="fixed pointer-events-none z-[10001] mix-blend-difference"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{
-            x: mousePosition.x + 20,
-            y: mousePosition.y + 20,
-            opacity: 1,
-            scale: 1,
-          }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-        >
-          <span className="text-xs font-medium uppercase tracking-wider opacity-60">
-            {cursorType}
-          </span>
-        </motion.div>
-      )}
     </>
   )
 }
 
 export default CustomCursor
-
